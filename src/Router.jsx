@@ -6,7 +6,7 @@ import Registration from "./pages/Registration";
 
 export const router = createBrowserRouter([
   {
-    path: "login",
+    path: "/",
     element: <Login/>,
     // children: [
     //   {

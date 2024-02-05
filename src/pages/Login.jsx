@@ -12,7 +12,7 @@ const Login = () => {
 
 
   return (
-    <div className="text-center my-[10%] bg-orange-100 py-10">
+    <div className="text-center my-[8%]  py-10">
     <Space direction="vertical" size={16}>
       <Card
         title="Login"
@@ -73,7 +73,7 @@ const Login = () => {
             offset: 8,
             span: 16,
           }}
-        >
+        > 
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
 

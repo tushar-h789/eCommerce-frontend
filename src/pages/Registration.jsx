@@ -1,16 +1,26 @@
 import { Card, Space, Button, Checkbox, Form, Input } from "antd";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Registration = () => {
-    const onFinish = (values) => {
-        console.log("Success:", values);
+    const onFinish = async (values) => {
+        const userInfo = {
+            name: values.name,
+            email: values.email,
+            password: values.password
+        }
+        console.log(userInfo);
+
+        const userData= await axios.post("http://localhost:8000/api/v1/auth/registration", userInfo)
+        console.log(userData);
+
       };
       const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
       };
 
   return (
-    <div className="text-center my-[10%] bg-orange-100 py-10">
+    <div className="text-center my-[7%] py-10">
       <Space direction="vertical" size={16}>
         <Card
           title="Registration"
@@ -101,7 +111,7 @@ const Registration = () => {
         </Form>
         {/* from end */}
         <div className="my-4">
-        <p>Already have an account? Please <span className="text-blue-500 font-bold"><Link to='/login'>Login</Link></span></p>
+        <p>Already have an account? Please <span className="text-blue-500 font-bold"><Link to='/'>Login</Link></span></p>
       </div>
         </Card>
         
