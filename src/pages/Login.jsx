@@ -1,103 +1,148 @@
-import { Card, Space, Button, Checkbox, Form, Input } from "antd";
-import { Link } from "react-router-dom";
+import { Card, Space, Button, Form, Input, Alert } from "antd";
+import axios from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Login = () => {
-    const onFinish = (values) => {
-        console.log("Success:", values);
-      };
-      const onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
-      };
+  const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
+  const onFinish = async (values) => {
+    const userInfo = {
+      email: values.email,
+      password: values.password,
+    };
 
+    try {
+      console.log(userInfo);
+
+      const loginInfo = await axios.post(
+        "http://localhost:7000/api/v1/auth/login",
+        userInfo
+      );
+      console.log(loginInfo);
+
+      if (loginInfo.data.role === "User") {
+        console.log("do not allow ");
+      } else {
+        // Check if the loginInfo contains an error message
+        if (loginInfo.status === 401 || loginInfo.status === 500) {
+          setErrorMessage("Invalid email or password");
+        } else {
+          // Reset the error message if the login is successful
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Login successful!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          setErrorMessage(null);
+          // Redirect to a different page or provide feedback
+          // navigate();
+        }
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+
+      // Check if the error is due to incorrect password
+      if (error.response && error.response.status === 401) {
+        setErrorMessage("Invalid email or password");
+      } else {
+        setErrorMessage("An error occurred. Please try again later.");
+      }
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
 
   return (
-    <div className="text-center my-[5%]  py-10">
-    <Space direction="vertical" size={16}>
-      <Card
-        title="Login"
-        style={{
-          width: 400,
-        }}
-      >
-
-          {/* from start */}
-      <Form
-        name="basic"
-        labelCol={{
-          span: 8,
-        }}
-        wrapperCol={{
-          span: 16,
-        }}
-        style={{
-          maxWidth: 600,
-        }}
-        initialValues={{
-          remember: true,
-        }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            {
-              required: true,
-              message: "Please input your email!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: "Please input your password!",
-            },
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
-
-        <Form.Item
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
-        > 
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
-
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
+    <div className="text-center my-[5%] py-10">
+      <Space direction="vertical" size={16}>
+        <Card
+          title="Login"
+          style={{
+            width: 400,
           }}
         >
-          <Button type="secondary" className="bg-orange-400" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-      {/* from end */}
-      <div className="my-4">
-      <p>Don not have an account? Please <span className="text-blue-500 font-bold"><Link to='/registration'>Registration</Link></span></p>
+          {/* form start */}
+          <Form
+            name="basic"
+            labelCol={{
+              span: 8,
+            }}
+            wrapperCol={{
+              span: 16,
+            }}
+            style={{
+              maxWidth: 600,
+            }}
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+          >
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your email!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+
+            <Form.Item
+              wrapperCol={{
+                offset: 8,
+                span: 16,
+              }}
+            >
+              <Button
+                type="secondary"
+                className="bg-orange-400"
+                htmlType="submit"
+              >
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+          {/* form end */}
+          {errorMessage && <Alert message={errorMessage} type="error" />}
+
+          <div className="my-4">
+            <p>
+              Don not have an account? Please{" "}
+              <span className="text-blue-500 font-bold">
+                <Link to="/registration">Register</Link>
+              </span>
+            </p>
+          </div>
+        </Card>
+      </Space>
     </div>
-      </Card>
-      
-    </Space>
-    
-  </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
