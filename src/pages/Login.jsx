@@ -12,7 +12,7 @@ const Login = () => {
 
 
   return (
-    <div className="text-center my-[8%]  py-10">
+    <div className="text-center my-[5%]  py-10">
     <Space direction="vertical" size={16}>
       <Card
         title="Login"

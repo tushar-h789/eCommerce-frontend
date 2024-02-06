@@ -3,6 +3,7 @@ import {
   createBrowserRouter,
 } from "react-router-dom";
 import Registration from "./pages/Registration";
+import Otp from "./pages/Otp";
 
 export const router = createBrowserRouter([
   {
@@ -18,5 +19,9 @@ export const router = createBrowserRouter([
   {
     path: 'registration',
     element: <Registration/>
+  },
+  {
+    path: '/otp/:email',
+    element: <Otp/>
   }
 ]);
