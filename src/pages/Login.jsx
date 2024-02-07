@@ -40,7 +40,7 @@ const Login = () => {
           });
           setErrorMessage(null);
           // Redirect to a different page or provide feedback
-          // navigate();
+          navigate('/dashboard');
         }
       }
     } catch (error) {
@@ -136,6 +136,11 @@ const Login = () => {
               Don not have an account? Please{" "}
               <span className="text-blue-500 font-bold">
                 <Link to="/registration">Register</Link>
+              </span>
+            </p>
+            <p className="my-2">
+              <span className="text-blue-500 font-bold">
+                <Link to="/forgotpassword">Forgot Password</Link>
               </span>
             </p>
           </div>
