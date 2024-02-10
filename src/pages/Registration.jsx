@@ -41,7 +41,7 @@ const Registration = () => {
       console.error("Error creating user or sending email", error);
 
       if (error.response && error.response.status === 400) {
-        setErrorMessage("Email already exists. Please use a different email.");
+        setErrorMessage("Please enter one uppercase letter, one lowercase letter, and one number or special character.");
       } else {
         setErrorMessage("An error occurred. Please try again later.");
       }

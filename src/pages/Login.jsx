@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
+  const [userError, setUserError] = useState("");
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
@@ -15,16 +16,14 @@ const Login = () => {
     };
 
     try {
-      console.log(userInfo);
-
       const loginInfo = await axios.post(
         "http://localhost:7000/api/v1/auth/login",
         userInfo
       );
-      console.log(loginInfo);
 
-      if (loginInfo.data.role === "User") {
+      if (loginInfo.data.role === "User" || loginInfo.status === 403) {
         console.log("do not allow ");
+        setUserError("User not allowed");
       } else {
         // Check if the loginInfo contains an error message
         if (loginInfo.status === 401 || loginInfo.status === 500) {
@@ -130,10 +129,11 @@ const Login = () => {
           </Form>
           {/* form end */}
           {errorMessage && <Alert message={errorMessage} type="error" />}
+          {userError && <Alert message={userError} type="error" />}
 
           <div className="my-4">
             <p>
-              Don not have an account? Please{" "}
+              Don't have an account? Please{" "}
               <span className="text-blue-500 font-bold">
                 <Link to="/registration">Register</Link>
               </span>

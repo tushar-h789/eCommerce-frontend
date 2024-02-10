@@ -56,8 +56,8 @@ const ChangePassword = () => {
         });
         setErrorMessage(null);
         // Redirect to a different page or provide feedback
-        navigate('/dashboard');
-      } else if (forgotPassData.status === 400 && forgotPassData.data.error === "Email and token do not match") {
+        navigate('/');
+      } else if (forgotPassData.status === 400 ) {
         // Handle case where email and token do not match
         setErrorMessage("Email and token do not match");
       } else {
