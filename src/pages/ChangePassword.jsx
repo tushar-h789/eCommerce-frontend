@@ -1,114 +1,140 @@
 import { Card, Space, Button, Form, Input, Alert } from "antd";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
+const ChangePassword = () => {
+  const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
+  const { email } = useParams();
+  const token = email;
 
-const changePassword = () => {
-    const [errorMessage, setErrorMessage] = useState(null)
-    const navigate = useNavigate()
-    const {email} = useParams()
+  // State to handle timeout message
+  const [showTimeoutMessage, setShowTimeoutMessage] = useState(false);
 
-    const onFinish = async (values) => {
+  useEffect(() => {
+    // Check if the token is empty and show timeout message
+    if (!token) {
+      setShowTimeoutMessage(true);
 
-        const forgotPassInfo = {
-            email: values.email,
-        };
-        console.log(forgotPassInfo);
-    
-        try {
-          const forgotPassData = await axios.post("http://localhost:7000/api/v1/auth/forgotPassword", forgotPassInfo);
+      // Automatically hide the message after a timeout
+      const timeoutId = setTimeout(() => {
+        setShowTimeoutMessage(false);
+      }, 5000);
 
-          console.log(forgotPassData);
-    
-          // Check if the response contains an error message
-        //   if (forgotPassData.status === 400 && forgotPassData.data === "OTP does not match") {
-        //     setErrorMessage("Email already exists. Please use a different email.");
-        //   } else {
-        //     // Reset the error message if the registration is successful
-        //     Swal.fire({
-        //       position: "top-end",
-        //       icon: "success",
-        //       title: "OTP verify successful!",
-        //       showConfirmButton: false,
-        //       timer: 1500,
-        //     });
-        //     setErrorMessage(null);
-        //     // Redirect to a different page or provide feedback
-        //     // navigate('/');
-        //   }
-        } catch (error) {
-          console.error("Error creating user or sending email", error);
-          setErrorMessage("Please submit your valid email");
-        }
-      };
-      const onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
-      };
+      // Clear the timeout when the component unmounts
+      return () => clearTimeout(timeoutId);
+    }
+  }, [token]);
 
+  const onFinish = async (values) => {
+    if (!token) {
+      // Token is empty, show timeout message
+      setShowTimeoutMessage(true);
+      return;
+    }
+
+    const newPassInfo = {
+      token: token,
+      password: values.password,
+    };
+
+    try {
+      const forgotPassData = await axios.post(
+        "http://localhost:7000/api/v1/auth/changepassword",
+        newPassInfo
+      );
+
+      if (forgotPassData.status === 200) {
+        // Password update successful
+        Swal.fire({
+          icon: "success",
+          title: "Password updated successfully!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setErrorMessage(null);
+        // Redirect to a different page or provide feedback
+        navigate('/dashboard');
+      } else if (forgotPassData.status === 400 && forgotPassData.data.error === "Email and token do not match") {
+        // Handle case where email and token do not match
+        setErrorMessage("Email and token do not match");
+      } else {
+        // Handle other cases if needed
+        setErrorMessage("Error updating password");
+      }
+    } catch (error) {
+      // Handle any errors during the update process
+      console.error("Error updating password", error);
+      setErrorMessage("Error updating password. Please try again.");
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
 
   return (
     <div className="text-center my-[5%]  py-10">
-    <Space direction="vertical" size={16}>
-      <Card
-        title="Change Password"
-        style={{
-          width: 400,
-        }}
-      >
-
-          {/* from start */}
-      <Form
-        name="basic"
-        labelCol={{
-          span: 8,
-        }}
-        wrapperCol={{
-          span: 16,
-        }}
-        style={{
-          maxWidth: 600,
-        }}
-        initialValues={{
-          remember: true,
-        }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item
-          label="New Password"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: "Please input your password!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
+      <Space direction="vertical" size={16}>
+        <Card
+          title="Change Password"
+          style={{
+            width: 400,
           }}
         >
-          <Button type="secondary" className="bg-orange-400" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-      {/* from end */}
-      {errorMessage && <Alert message={errorMessage} type="error" />}
-      </Card>
-      
-    </Space>
-    
-  </div>
-  )
-}
+          {/* Form start */}
+          <Form
+            name="basic"
+            labelCol={{
+              span: 8,
+            }}
+            wrapperCol={{
+              span: 16,
+            }}
+            style={{
+              maxWidth: 600,
+            }}
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+          >
+            <Form.Item
+              label="New Password"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
 
-export default changePassword
+            <Form.Item
+              wrapperCol={{
+                offset: 8,
+                span: 16,
+              }}
+            >
+              <Button type="secondary" className="bg-orange-400" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+          {/* Form end */}
+
+          {showTimeoutMessage && <Alert message="Token is empty. Please try again." type="error" />}
+          {errorMessage && <Alert message={errorMessage} type="error" />}
+        </Card>
+      </Space>
+    </div>
+  );
+};
+
+export default ChangePassword;

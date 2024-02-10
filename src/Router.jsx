@@ -7,6 +7,7 @@ import Otp from "./pages/Otp";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import ChangePassword from "./pages/ChangePassword";
+import Gmail from "./pages/Gmail";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
   {
     path: 'forgotpassword',
     element: <ForgotPassword/>
+  },
+  {
+    path: 'gmail',
+    element: <Gmail/>
   },
   {
     path: '/changepassword/:email',

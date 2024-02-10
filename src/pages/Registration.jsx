@@ -16,10 +16,10 @@ const Registration = () => {
     };
 
     try {
-      console.log(userInfo);
+      // console.log(userInfo);
 
       const response = await axios.post("http://localhost:7000/api/v1/auth/registration", userInfo);
-      console.log(response);
+      // console.log(response);
 
       // Check if the response contains an error message
       if (response.status === 400 && response.data === "Email Already Exists") {

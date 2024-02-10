@@ -1,11 +1,13 @@
 import { Card, Space, Button, Form, Input, Alert } from "antd";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const ForgotPassword = () => {
   // State to handle error messages
   const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate()
 
   // Function to handle form submission
   const onFinish = async (values) => {
@@ -35,6 +37,8 @@ const ForgotPassword = () => {
         showConfirmButton: false,
         timer: 1500,
       });
+
+      navigate('/gmail')
 
       // Reset error message
       setErrorMessage(null);
