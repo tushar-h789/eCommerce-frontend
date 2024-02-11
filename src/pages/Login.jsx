@@ -20,6 +20,7 @@ const Login = () => {
         "http://localhost:7000/api/v1/auth/login",
         userInfo
       );
+      console.log(loginInfo.data);
 
       if (loginInfo.data.role === "User" || loginInfo.status === 403) {
         console.log("do not allow ");
@@ -38,6 +39,9 @@ const Login = () => {
             timer: 1500,
           });
           setErrorMessage(null);
+
+          // set user information local storage
+          localStorage.setItem('user', JSON.stringify(loginInfo.data))
           // Redirect to a different page or provide feedback
           navigate('/dashboard');
         }
@@ -133,7 +137,7 @@ const Login = () => {
 
           <div className="my-4">
             <p>
-              Don't have an account? Please{" "}
+              Do not have an account? Please{" "}
               <span className="text-blue-500 font-bold">
                 <Link to="/registration">Register</Link>
               </span>
