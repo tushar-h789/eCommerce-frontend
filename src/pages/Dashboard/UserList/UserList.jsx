@@ -6,7 +6,7 @@ const UserList = () => {
   const [userList, setUserList] = useState([]);
   const [userName, setUserName] = useState([]);
 
-  //   table part start
+  // Table columns configuration
   const columns = [
     {
       title: "Name",
@@ -28,34 +28,38 @@ const UserList = () => {
       onFilter: (value, record) => record.address.indexOf(value) === 0,
     },
   ];
+
+  // Table onChange handler
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
   };
-  //   table part end
 
   useEffect(() => {
-    const userName = [];
-    async function usersList() {
-      const userList = await axios.get(
-        "http://localhost:7000/api/v1/auth/userlist"
-      );
-      setUserList(userList.data);
+    const userNameFilterOptions = [];
 
-      userList.data.map((users) => {
-        userName.push({
-          text: users.name,
-          value: users.name,
+    async function fetchUserList() {
+      try {
+        const response = await axios.get("http://localhost:7000/api/v1/auth/userlist");
+        setUserList(response.data);
+
+        response.data.forEach((user) => {
+          userNameFilterOptions.push({
+            text: user.name,
+            value: user.name,
+          });
         });
-      });
 
-      setUserName(userName);
+        setUserName(userNameFilterOptions);
+      } catch (error) {
+        console.error("Error fetching user list", error);
+      }
     }
 
-    usersList();
+    fetchUserList();
   }, []);
 
+  // Filter users with role "User"
   const filteredUser = userList.filter((user) => user.role === "User");
-  //   console.log(filteredUser);
 
   return (
     <div>

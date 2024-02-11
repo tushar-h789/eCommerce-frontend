@@ -1,11 +1,8 @@
 import { useState } from "react";
-import {
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+import { AppstoreOutlined, MailOutlined, SettingOutlined } from "@ant-design/icons";
 import { Col, Menu, Row } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
+
 function getItem(label, key, icon, children, type) {
   return {
     key,
@@ -15,6 +12,7 @@ function getItem(label, key, icon, children, type) {
     type,
   };
 }
+
 const items = [
   getItem("Users", "sub1", <MailOutlined />, [
     getItem("User", "userlist"),
@@ -41,7 +39,7 @@ const items = [
   ]),
 ];
 
-// submenu keys of first level
+// submenu keys of the first level
 const rootSubmenuKeys = ["sub1", "sub2", "sub6"];
 
 const SiteBar = () => {
@@ -58,7 +56,6 @@ const SiteBar = () => {
   };
 
   const handleSidebarOpen = (event) => {
-    // console.log(event);
     navigate(event.key);
   };
 
