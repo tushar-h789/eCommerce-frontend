@@ -72,6 +72,7 @@ const SiteBar = () => {
               width: 256,
             }}
             items={items}
+            className="fixed"
           />
         </Col>
         <Col span={19}>

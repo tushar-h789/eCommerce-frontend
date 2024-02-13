@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Space, Table } from "antd";
+import { Button, Space, Table, Modal, Form, Input, Alert } from "antd";
 import Swal from "sweetalert2";
 
 const ViewCategory = () => {
@@ -8,6 +8,11 @@ const ViewCategory = () => {
   const [categories, setCategories] = useState([]);
   const [shouldReloadData, setShouldReloadData] = useState(false);
   const [loadingCategoryId, setLoadingCategoryId] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editId, setEditId] = useState("");
+  const [form] = Form.useForm();  // Form hooks
+    // State to manage error messages
+    const [errorMessage, setErrorMessage] = useState(null);
 
   // Function to handle category deletion
   const handleDelete = async (categoryId) => {
@@ -45,14 +50,64 @@ const ViewCategory = () => {
     }
   };
 
-  // Function to handle category editing
-  const handleEdit = (categoryId) => {
-    console.log("Edit category with ID:", categoryId);
-    // Implement the logic to open the edit category modal
-    // For example, you can use a state to control the modal visibility
-    // and pass the category data to the modal component
-    // <EditCategoryModal categoryId={categoryId} onClose={() => handleModalClose()} />
+  //  edit part start
+  const onFinish = async (values) => {
+    console.log("Success:", values);
+    const editCategoryData = {
+      name: values.categoryName,
+      id: editId,
+    };
+
+    const response = await axios.post(
+      "http://localhost:7000/api/v1/products/editcategory",
+      editCategoryData
+    );
+    console.log(response);
+
+    if (response.status === 200 && response.data === "Category Already Exists") {
+        setErrorMessage("Category Already Exists. Please use a different category.");
+      }else{
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: " Category Updated!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+      
+          setShouldReloadData(!shouldReloadData);
+          setLoadingCategoryId("");
+          setIsModalOpen(false);  // Close the modal after successful edit
+      }
+
+    
   };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  const showModal = (editId) => {
+    setIsModalOpen(true);
+    setEditId(editId);
+
+    // Find the category data based on the editId
+    const categoryToEdit = categories.find((category) => category.key === editId);
+
+    // Set initial values for the form fields
+    form.setFieldsValue({
+      categoryName: categoryToEdit.name,
+    });
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  //   modal end
 
   useEffect(() => {
     // Function to fetch all categories from the API
@@ -71,9 +126,6 @@ const ViewCategory = () => {
 
         // Set the transformed data to the state
         setCategories(transformedData);
-
-        // Log the original data (optional)
-        console.log(response.data.data);
       } catch (error) {
         // Handle errors if any
         console.error("Error fetching categories:", error);
@@ -102,7 +154,7 @@ const ViewCategory = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={() => handleEdit(record.key)}>Edit</Button>
+          <Button onClick={() => showModal(record.key)}>Edit</Button>
           <Button
             type="primary"
             danger
@@ -126,6 +178,63 @@ const ViewCategory = () => {
         </h2>
       </div>
       <Table columns={columns} dataSource={categories} />
+
+      {/* edit modal start */}
+      <Modal
+        title="Edit Category"
+        visible={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form
+          form={form}
+          name="basic"
+          labelCol={{
+            span: 8,
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
+          style={{
+            maxWidth: 600,
+          }}
+          autoComplete="off"
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+        >
+          {/* Form input for category name */}
+          <Form.Item
+            label="Edit Category Name"
+            name="categoryName"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Category!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          {errorMessage && <Alert message={errorMessage} type="error" />}
+
+          {/* Form submission button */}
+          <Form.Item
+            wrapperCol={{
+              offset: 8,
+              span: 16,
+            }}
+          >
+            <Button
+              block
+              htmlType="submit"
+              className="my-2 bg-blue-500 text-white font-semibold"
+            >
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+      {/* edit modal end */}
     </>
   );
 };
