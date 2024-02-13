@@ -21,12 +21,12 @@ const items = [
   ]),
   getItem("Products", "sub2", <AppstoreOutlined />, [
     getItem("Category", "sub3", null, [
-      getItem("Add Category", "3"),
-      getItem("View Category", "4"),
+      getItem("Add Category", "addcategory"),
+      getItem("View Category", "viewcategory"),
     ]),
     getItem("Sub Category", "sub4", null, [
       getItem("Add Sub Category", "5"),
-      getItem("View Sub Category", "6"),
+      getItem("View Sub Category", "viewsubcategory"),
     ]),
     getItem("Product", "sub5", null, [
       getItem("Add Product", "7"),

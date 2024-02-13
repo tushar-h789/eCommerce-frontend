@@ -60,6 +60,7 @@ const UserList = () => {
 
   // Filter users with role "User"
   const filteredUser = userList.filter((user) => user.role === "User");
+//   console.log(filteredUser);
 
   return (
     <div>

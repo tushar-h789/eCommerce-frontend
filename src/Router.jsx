@@ -11,6 +11,9 @@ import Gmail from "./pages/Gmail";
 import UserList from "./pages/Dashboard/UserList/UserList";
 import Merchant from "./pages/Dashboard/Merchant/Merchant";
 import Admin from "./pages/Dashboard/Admin/Admin";
+import ViewCategory from "./pages/Dashboard/ViewCategory/ViewCategory";
+import AddCategory from "./pages/Dashboard/AddCategory/AddCategory";
+import ViewSubCategory from "./pages/Dashboard/ViewSubCategory/ViewSubCategory";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +61,18 @@ export const router = createBrowserRouter([
       {
         path: 'admin',
         element: <Admin/>
+      },
+      {
+        path: 'viewcategory',
+        element: <ViewCategory/>
+      },
+      {
+        path: 'addcategory',
+        element: <AddCategory/>
+      },
+      {
+        path: 'viewsubcategory',
+        element: <ViewSubCategory/>
       }
     ]
   }
