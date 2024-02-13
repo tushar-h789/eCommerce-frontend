@@ -2,15 +2,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Space, Table } from "antd";
 import Swal from "sweetalert2";
-import EditCategory from "./EditCategory";
 
 const ViewCategory = () => {
   // State to store the fetched category data
-  const [viewCategory, setViewCategory] = useState([]);
-  const [loadData, setLoadData] = useState(false);
-  const [loading, setLoading] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [shouldReloadData, setShouldReloadData] = useState(false);
+  const [loadingCategoryId, setLoadingCategoryId] = useState("");
 
-  const handleDelete = async (id) => {
+  // Function to handle category deletion
+  const handleDelete = async (categoryId) => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -22,14 +22,10 @@ const ViewCategory = () => {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result) => {
         if (result.isConfirmed) {
-          //when i use delete operator then uses two object
-          setLoading(id);
-          const categoryData = {
-            data: { categoryId: id },
-          };
+          setLoadingCategoryId(categoryId);
           const response = await axios.delete(
             "http://localhost:7000/api/v1/products/deletecategory",
-            categoryData
+            { data: { categoryId: categoryId } }
           );
           console.log(response);
           Swal.fire({
@@ -40,20 +36,23 @@ const ViewCategory = () => {
             timer: 1500,
           });
 
-          setLoadData(!loadData);
-          setLoading(id);
+          setShouldReloadData(!shouldReloadData);
+          setLoadingCategoryId("");
         }
       });
     } catch (error) {
-      console.log("catch error", error);
+      console.error("Error handling category deletion:", error);
     }
   };
 
-  const handleEdit =(edit)=>{
-    console.log(edit);
-    <EditCategory/>
-
-  }
+  // Function to handle category editing
+  const handleEdit = (categoryId) => {
+    console.log("Edit category with ID:", categoryId);
+    // Implement the logic to open the edit category modal
+    // For example, you can use a state to control the modal visibility
+    // and pass the category data to the modal component
+    // <EditCategoryModal categoryId={categoryId} onClose={() => handleModalClose()} />
+  };
 
   useEffect(() => {
     // Function to fetch all categories from the API
@@ -71,7 +70,7 @@ const ViewCategory = () => {
         }));
 
         // Set the transformed data to the state
-        setViewCategory(transformedData);
+        setCategories(transformedData);
 
         // Log the original data (optional)
         console.log(response.data.data);
@@ -81,9 +80,9 @@ const ViewCategory = () => {
       }
     }
 
-    // Call the function to fetch categories when the component mounts
+    // Fetch categories when the component mounts and whenever data should be reloaded
     fetchAllCategories();
-  }, [loadData]);
+  }, [shouldReloadData]);
 
   // Table columns configuration
   const columns = [
@@ -103,13 +102,13 @@ const ViewCategory = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={()=>handleEdit(record.key)}>Edit</Button>
+          <Button onClick={() => handleEdit(record.key)}>Edit</Button>
           <Button
             type="primary"
             danger
             ghost
             onClick={() => handleDelete(record.key)}
-            loading={loading === record.key}
+            loading={loadingCategoryId === record.key}
           >
             Delete
           </Button>
@@ -123,10 +122,10 @@ const ViewCategory = () => {
       <div className="flex justify-evenly">
         <h2 className="text-2xl font-semibold my-2">View Category</h2>
         <h2 className="text-2xl font-semibold my-2">
-          Total Category {viewCategory.length}
+          Total Category {categories.length}
         </h2>
       </div>
-      <Table columns={columns} dataSource={viewCategory} />
+      <Table columns={columns} dataSource={categories} />
     </>
   );
 };
