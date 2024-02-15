@@ -1,25 +1,28 @@
+// External library imports
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Space, Table, Modal, Form, Input, Alert } from "antd";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 
+// Main component definition
 const ViewCategory = () => {
-  // State to store the fetched category data
+  // State declarations
   const [categories, setCategories] = useState([]);
   const [shouldReloadData, setShouldReloadData] = useState(false);
   const [loadingCategoryId, setLoadingCategoryId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editId, setEditId] = useState("");
   const [form] = Form.useForm(); // Form hooks
-  // State to manage error messages
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // Accessing user data from Redux store
   const userData = useSelector((state) => state.activeUser.value);
 
   // Function to handle category deletion
   const handleDelete = async (categoryId) => {
     try {
+      // Display confirmation modal before deletion
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -30,12 +33,17 @@ const ViewCategory = () => {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result) => {
         if (result.isConfirmed) {
+          // Set loading state during deletion
           setLoadingCategoryId(categoryId);
+
+          // Make API request to delete category
           const response = await axios.delete(
             "http://localhost:7000/api/v1/products/deletecategory",
             { data: { categoryId: categoryId } }
           );
           console.log(response);
+
+          // Display success message using Swal
           Swal.fire({
             position: "top-end",
             icon: "success",
@@ -44,16 +52,20 @@ const ViewCategory = () => {
             timer: 1500,
           });
 
+          // Trigger data reload and reset loading state
           setShouldReloadData(!shouldReloadData);
           setLoadingCategoryId("");
         }
       });
     } catch (error) {
+      // Log and handle errors
       console.error("Error handling category deletion:", error);
     }
   };
 
-  //  edit part start
+  // Edit section...
+
+  // Function to handle form submission on successful edit
   const onFinish = async (values) => {
     console.log("Success:", values);
     const editCategoryData = {
@@ -61,12 +73,14 @@ const ViewCategory = () => {
       id: editId,
     };
 
+    // Make API request to edit category
     const response = await axios.post(
       "http://localhost:7000/api/v1/products/editcategory",
       editCategoryData
     );
     console.log(response);
 
+    // Handle response based on status
     if (
       response.status === 200 &&
       response.data === "Category Already Exists"
@@ -75,6 +89,7 @@ const ViewCategory = () => {
         "Category Already Exists. Please use a different category."
       );
     } else {
+      // Display success message using Swal
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -83,16 +98,19 @@ const ViewCategory = () => {
         timer: 1500,
       });
 
+      // Trigger data reload and reset loading state
       setShouldReloadData(!shouldReloadData);
       setLoadingCategoryId("");
       setIsModalOpen(false); // Close the modal after successful edit
     }
   };
 
+  // Function to handle form submission failure
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
+  // Function to show the edit modal and set initial form values
   const showModal = (editId) => {
     setIsModalOpen(true);
     setEditId(editId);
@@ -108,6 +126,7 @@ const ViewCategory = () => {
     });
   };
 
+  // Functions to handle modal state
   const handleOk = () => {
     setIsModalOpen(false);
   };
@@ -115,12 +134,13 @@ const ViewCategory = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  //   modal end
+  // Modal section end
 
+  // Fetch all categories from the API on component mount and when data needs to be reloaded
   useEffect(() => {
-    // Function to fetch all categories from the API
     async function fetchAllCategories() {
       try {
+        // Make API request to get all categories
         const response = await axios.get(
           "http://localhost:7000/api/v1/products/allcategory"
         );
@@ -144,23 +164,27 @@ const ViewCategory = () => {
     fetchAllCategories();
   }, [shouldReloadData]);
 
+  // Function to handle category approval
   const handleApprove = async (approve) => {
-    // console.log(approve);
     setLoadingCategoryId(approve.key);
+
+    // Create request payload for category approval
     const editCategoryData = {
       isActive: approve.status === "Approved" ? false : true,
       id: approve.key,
     };
 
+    // Make API request to approve category
     const response = await axios.post(
       "http://localhost:7000/api/v1/products/approvecategory",
       editCategoryData
     );
-    // console.log(response);
 
+    // Handle response based on status
     if (response.status === 200 && response.data === "status changed!") {
       setErrorMessage("This category is approved !");
     } else {
+      // Display success message using Swal
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -169,6 +193,7 @@ const ViewCategory = () => {
         timer: 1500,
       });
 
+      // Trigger data reload and reset loading state
       setShouldReloadData(!shouldReloadData);
       setLoadingCategoryId("");
       setIsModalOpen(false); // Close the modal after successful edit
@@ -220,6 +245,7 @@ const ViewCategory = () => {
     },
   ];
 
+  // Return JSX for rendering
   return (
     <>
       <div className="flex justify-evenly">
@@ -230,7 +256,7 @@ const ViewCategory = () => {
       </div>
       <Table columns={columns} dataSource={categories} />
 
-      {/* edit modal start */}
+      {/* Edit modal start */}
       <Modal
         title="Edit Category"
         visible={isModalOpen}
@@ -285,7 +311,7 @@ const ViewCategory = () => {
           </Form.Item>
         </Form>
       </Modal>
-      {/* edit modal end */}
+      {/* Edit modal end */}
     </>
   );
 };
