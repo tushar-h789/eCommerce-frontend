@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Space, Table, Modal, Form, Input, Alert } from "antd";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 const ViewCategory = () => {
   // State to store the fetched category data
@@ -10,9 +11,11 @@ const ViewCategory = () => {
   const [loadingCategoryId, setLoadingCategoryId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editId, setEditId] = useState("");
-  const [form] = Form.useForm();  // Form hooks
-    // State to manage error messages
-    const [errorMessage, setErrorMessage] = useState(null);
+  const [form] = Form.useForm(); // Form hooks
+  // State to manage error messages
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const userData = useSelector((state) => state.activeUser.value);
 
   // Function to handle category deletion
   const handleDelete = async (categoryId) => {
@@ -64,23 +67,26 @@ const ViewCategory = () => {
     );
     console.log(response);
 
-    if (response.status === 200 && response.data === "Category Already Exists") {
-        setErrorMessage("Category Already Exists. Please use a different category.");
-      }else{
-        Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: " Category Updated!",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-      
-          setShouldReloadData(!shouldReloadData);
-          setLoadingCategoryId("");
-          setIsModalOpen(false);  // Close the modal after successful edit
-      }
+    if (
+      response.status === 200 &&
+      response.data === "Category Already Exists"
+    ) {
+      setErrorMessage(
+        "Category Already Exists. Please use a different category."
+      );
+    } else {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: " Category Updated!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
 
-    
+      setShouldReloadData(!shouldReloadData);
+      setLoadingCategoryId("");
+      setIsModalOpen(false); // Close the modal after successful edit
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -92,7 +98,9 @@ const ViewCategory = () => {
     setEditId(editId);
 
     // Find the category data based on the editId
-    const categoryToEdit = categories.find((category) => category.key === editId);
+    const categoryToEdit = categories.find(
+      (category) => category.key === editId
+    );
 
     // Set initial values for the form fields
     form.setFieldsValue({
@@ -136,6 +144,37 @@ const ViewCategory = () => {
     fetchAllCategories();
   }, [shouldReloadData]);
 
+  const handleApprove = async (approve) => {
+    // console.log(approve);
+    setLoadingCategoryId(approve.key);
+    const editCategoryData = {
+      isActive: approve.status === "Approved" ? false : true,
+      id: approve.key,
+    };
+
+    const response = await axios.post(
+      "http://localhost:7000/api/v1/products/approvecategory",
+      editCategoryData
+    );
+    // console.log(response);
+
+    if (response.status === 200 && response.data === "status changed!") {
+      setErrorMessage("This category is approved !");
+    } else {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: " Category Approved!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      setShouldReloadData(!shouldReloadData);
+      setLoadingCategoryId("");
+      setIsModalOpen(false); // Close the modal after successful edit
+    }
+  };
+
   // Table columns configuration
   const columns = [
     {
@@ -154,7 +193,9 @@ const ViewCategory = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={() => showModal(record.key)}>Edit</Button>
+          {userData.role === "Merchant" && (
+            <Button onClick={() => showModal(record.key)}>Edit</Button>
+          )}
           <Button
             type="primary"
             danger
@@ -164,6 +205,16 @@ const ViewCategory = () => {
           >
             Delete
           </Button>
+          {userData.role === "Admin" && (
+            <Button
+              type="primary"
+              ghost
+              onClick={() => handleApprove(record)}
+              loading={loadingCategoryId === record.key}
+            >
+              {record.status === "Approved" ? "Hold" : "Approve"}
+            </Button>
+          )}
         </Space>
       ),
     },

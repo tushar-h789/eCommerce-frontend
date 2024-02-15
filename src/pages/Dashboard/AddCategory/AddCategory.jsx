@@ -10,7 +10,7 @@ const AddCategory = () => {
 
   // Redux hook to get user data from the store
   const data = useSelector(state => state.activeUser.value);
-  console.log(data);
+  // console.log(data);
 
   // Function to handle category creation
   const onFinish = async (values) => {
@@ -19,11 +19,13 @@ const AddCategory = () => {
       name: values.categoryName,
       ownerId: data.id
     };
+    console.log(categoryData);
 
     try {
       // Send a request to create a new category
       const response = await axios.post('http://localhost:7000/api/v1/products/createcategory', categoryData);
 
+      console.log(response);
       // Check if the response status is 200
       if (response.status === 200 && response.data === "Category Already Exists") {
         setErrorMessage("Category Already Exists. Please use a different category.");
@@ -92,7 +94,7 @@ const AddCategory = () => {
           span: 16,
         }}
       >
-        <Button type="primary" block htmlType="submit" className='my-2'>
+        <Button type="primary" block htmlType="submit" className='my-2 bg-blue-500'>
           Submit
         </Button>
       </Form.Item>
