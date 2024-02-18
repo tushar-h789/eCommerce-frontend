@@ -15,6 +15,7 @@ import ViewCategory from "./pages/Dashboard/ViewCategory/ViewCategory";
 import AddCategory from "./pages/Dashboard/AddCategory/AddCategory";
 import ViewSubCategory from "./pages/Dashboard/ViewSubCategory/ViewSubCategory";
 import AddSubCategory from "./pages/Dashboard/AddSubCategory/AddSubCategory";
+import AddProduct from "./pages/Dashboard/AddProduct/AddProduct";
 
 export const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ export const router = createBrowserRouter([
       {
         path: 'viewsubcategory',
         element: <ViewSubCategory/>
+      },
+      {
+        path: 'addproduct',
+        element: <AddProduct/>
       }
     ]
   }
