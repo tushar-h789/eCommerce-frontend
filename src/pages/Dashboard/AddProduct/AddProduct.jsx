@@ -1,10 +1,35 @@
 import { useState } from "react";
 import { Button, Form, Input, Card, Col, Row } from "antd";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const AddProduct = () => {
   let [varinatvalue, setVarinatvalue] = useState([]);
   let [value, setValue] = useState("");
   let [valuestock, setValueStock] = useState("");
+
+
+  const onFinishMain =async (values) => {
+  //  console.log(values);
+  const productData = {
+    name: values.name,
+    description: values.description,
+    variant: varinatvalue
+  }
+  const data = await axios.post("http://localhost:7000/api/v1/products/createproducts",productData)
+  .then(()=>{
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Your product added",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  })
+  console.log(data);
+  };
+
+
   const onFinish = (values) => {
     let arr = [...varinatvalue];
 
@@ -60,7 +85,7 @@ const AddProduct = () => {
         initialValues={{
           remember: true,
         }}
-        onFinish={onFinish}
+        onFinish={onFinishMain}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
@@ -153,6 +178,7 @@ const AddProduct = () => {
               <div>
                   <div className="flex justify-between">
                   <b>Variant Name: {item.name}</b>
+                  {/* {JSON.stringify(varinatvalue)} */}
                 <Button type="primary" danger onClick={()=> handleDelete(index)}>Delete</Button>
                   </div>
 
@@ -169,11 +195,11 @@ const AddProduct = () => {
                 <br />
                 <Button ghost type="primary" className="my-2" onClick={() => handleVariantValue(index)}>Add</Button>
                 <div  className="scroll-my-1">
-                {item.value.map((i) => (
+                {item.value.map((i, id) => (
                     <div key={i._id} className="flex gap-12 font-bold my-2 scroll-mt-0">
                     <p>{i.name}</p>
                     <p>{i.stock}</p>
-                    <Button danger className="font-semibold" onClick={()=>handleValueDelete(index, i)}>Delete</Button>
+                    <Button danger className="font-semibold" onClick={()=>handleValueDelete(index, id)}>Delete</Button>
                     </div>
                 ))}
                 </div>
