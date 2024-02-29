@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Form, Input, Card } from "antd";
+import { Button, Form, Input, Card, Col, Row } from "antd";
 
 const AddProduct = () => {
   let [varinatvalue, setVarinatvalue] = useState([]);
@@ -28,6 +28,22 @@ const AddProduct = () => {
     setVarinatvalue(arr);
   };
 
+  const handleDelete =(index)=>{
+    console.log(index);
+    const arr = [...varinatvalue]
+    console.log(arr);
+    arr.splice(index, 1)
+    setVarinatvalue(arr)
+  }
+
+  const handleValueDelete =(mainId, id)=>{
+    console.log(mainId, id);
+    const arr = [...varinatvalue]
+    console.log(arr[mainId].value);
+    arr[mainId].value.splice(id, 1)
+    setValue(arr)
+  }
+
   return (
     <>
       <Form
@@ -54,7 +70,7 @@ const AddProduct = () => {
             span: 16,
           }}
         >
-          <Button type="primary" htmlType="submit">
+          <Button ghost type="primary" htmlType="submit">
             Submit
           </Button>
         </Form.Item>
@@ -94,7 +110,7 @@ const AddProduct = () => {
           span: 16,
         }}
         style={{
-          maxWidth: 600,
+          maxWidth: 1000,
         }}
         initialValues={{
           remember: true,
@@ -106,6 +122,9 @@ const AddProduct = () => {
         <Form.Item
           label="Variant Name"
           name="variantname"
+          style={{
+            maxWidth: 600,
+          }}
           rules={[
             {
               required: true,
@@ -122,35 +141,47 @@ const AddProduct = () => {
             span: 16,
           }}
         >
-          <Button type="primary" htmlType="submit">
+          <Button ghost type="primary" htmlType="submit">
             Add Variant
           </Button>
         </Form.Item>
+        <Row>
         {varinatvalue.length > 0 &&
           varinatvalue.map((item, index) => (
-            <Card key={item._id} style={{ width: 300 }}>
-              <>
-                <p>
-                  <b>{item.name}</b>
-                </p>
-                <input
+            <Col key={item._id} span={8}>
+            <Card  style={{ width: 300 }} className="my-2 h-96 overflow-y-auto">
+              <div>
+                  <div className="flex justify-between">
+                  <b>Variant Name: {item.name}</b>
+                <Button type="primary" danger onClick={()=> handleDelete(index)}>Delete</Button>
+                  </div>
+
+                <Input
                   placeholder="value name"
+                  className="my-2 placeholder:font-bold placeholder:text-lg"
                   onChange={(e) => setValue(e.target.value)}
                 />
-                <input
+                <Input
                   placeholder="Sotck"
+                  className="my-2 placeholder:font-bold placeholder:text-lg"
                   onChange={(e) => setValueStock(e.target.value)}
                 />
-                <Button onClick={() => handleVariantValue(index)}>Add</Button>
+                <br />
+                <Button ghost type="primary" className="my-2" onClick={() => handleVariantValue(index)}>Add</Button>
+                <div  className="scroll-my-1">
                 {item.value.map((i) => (
-                  <>
+                    <div key={i._id} className="flex gap-12 font-bold my-2 scroll-mt-0">
                     <p>{i.name}</p>
                     <p>{i.stock}</p>
-                  </>
+                    <Button danger className="font-semibold" onClick={()=>handleValueDelete(index, i)}>Delete</Button>
+                    </div>
                 ))}
-              </>
+                </div>
+              </div>
             </Card>
+            </Col>
           ))}
+          </Row>
       </Form>
     </>
   );
