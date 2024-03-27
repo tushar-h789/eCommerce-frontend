@@ -112,7 +112,9 @@ const ViewCategory = () => {
     setEditId(editId);
 
     // Find the category data based on the editId
-    const categoryToEdit = categories.find((category) => category.key === editId);
+    const categoryToEdit = categories.find(
+      (category) => category.key === editId
+    );
 
     // Set initial values for the form fields
     form.setFieldsValue({
@@ -167,22 +169,22 @@ const ViewCategory = () => {
         const response = await axios.get(
           "http://localhost:7000/api/v1/products/viewsubcategory"
         );
-        console.log("res", response.data.data);
+        // console.log("res", response.data.data);
 
         // Transform the received data into the desired format
         response.data.data.map((item) => {
           arr.push({
             key: item._id,
             name: item.name,
-            categoryName: item.categoryId.name,
+            categoryName: item.categoryId?.name,
             status: item.isActive ? "Approved" : "Pending",
           });
-          // console.log("item",item.categoryId.name);
+          // console.log("item",item.categoryId?.name);
         });
 
         // Set the transformed data to the state
         setSubCategories(arr);
-        console.log("subCategory", arr);
+        // console.log("subCategory", subCategories);
       } catch (error) {
         // Handle errors if any
         console.error("Error fetching categories:", error);

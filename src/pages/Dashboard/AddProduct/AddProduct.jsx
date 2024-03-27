@@ -49,14 +49,17 @@ const AddProduct = () => {
       stock: valuestock,
     });
     let arr = [...varinatvalue];
-    console.log(arr);
+    // console.log(arr);
     setVarinatvalue(arr);
+    // clear input box values
+    setValue("")
+    setValueStock("")
   };
 
   const handleDelete = (index) => {
     console.log(index);
     const arr = [...varinatvalue];
-    console.log(arr);
+    // console.log(arr);
     arr.splice(index, 1);
     setVarinatvalue(arr);
   };
@@ -64,13 +67,13 @@ const AddProduct = () => {
   const handleValueDelete = (mainId, id) => {
     console.log(mainId, id);
     const arr = [...varinatvalue];
-    console.log(arr[mainId].value);
+    // console.log(arr[mainId].value);
     arr[mainId].value.splice(id, 1);
     setValue(arr);
   };
 
   useEffect(() => {
-    console.log("running");
+    // console.log("running");
     async function getData() {
       const data = await axios.get(
         "http://localhost:7000/api/v1/products/viewstore/65c725ddf3bff7b9096d963d"
