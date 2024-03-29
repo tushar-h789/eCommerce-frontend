@@ -3,6 +3,7 @@ import { Button, Form, Input, Card, Col, Row, Select } from "antd";
 import axios from "axios";
 import Swal from "sweetalert2";
 import CkEditor from "./CkEditor";
+const { TextArea } = Input;
 
 const AddProduct = () => {
   let [varinatvalue, setVarinatvalue] = useState([]);
@@ -18,7 +19,7 @@ const AddProduct = () => {
     const productData = {
       name: values.name,
       description: values.description,
-      variant: varinatvalue,
+      // variant: varinatvalue,
       avatar: image,
     };
 
@@ -53,38 +54,39 @@ const AddProduct = () => {
     });
     setVarinatvalue(arr);
   };
+
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  const handleVariantValue = (index) => {
-    varinatvalue[index].value.push({
-      name: value,
-      stock: valuestock,
-    });
-    let arr = [...varinatvalue];
-    // console.log(arr);
-    setVarinatvalue(arr);
-    // clear input box values
-    setValue("");
-    setValueStock("");
-  };
+  // const handleVariantValue = (index) => {
+  //   varinatvalue[index].value.push({
+  //     name: value,
+  //     stock: valuestock,
+  //   });
+  //   let arr = [...varinatvalue];
+  //   // console.log(arr);
+  //   setVarinatvalue(arr);
+  //   // clear input box values
+  //   setValue("");
+  //   setValueStock("");
+  // };
 
-  const handleDelete = (index) => {
-    console.log(index);
-    const arr = [...varinatvalue];
-    // console.log(arr);
-    arr.splice(index, 1);
-    setVarinatvalue(arr);
-  };
+  // const handleDelete = (index) => {
+  //   console.log(index);
+  //   const arr = [...varinatvalue];
+  //   // console.log(arr);
+  //   arr.splice(index, 1);
+  //   setVarinatvalue(arr);
+  // };
 
-  const handleValueDelete = (mainId, id) => {
-    console.log(mainId, id);
-    const arr = [...varinatvalue];
-    // console.log(arr[mainId].value);
-    arr[mainId].value.splice(id, 1);
-    setValue(arr);
-  };
+  // const handleValueDelete = (mainId, id) => {
+  //   console.log(mainId, id);
+  //   const arr = [...varinatvalue];
+  //   // console.log(arr[mainId].value);
+  //   arr[mainId].value.splice(id, 1);
+  //   setValue(arr);
+  // };
 
   useEffect(() => {
     // console.log("running");
@@ -103,15 +105,15 @@ const AddProduct = () => {
     setImagePrev(URL.createObjectURL(e.target.files[0]));
   };
 
-  const handleChange = (e) => {
-    console.log(e.label);
-    setProductType(e.label);
-  };
+  // const handleChange = (e) => {
+  //   console.log(e.label);
+  //   setProductType(e.label);
+  // };
 
-  // const handleProductType =(e)=>{
-  //   console.log("kire",e.label);
-  //   setProductType(e.label)
-  // }
+  // const handleProductType = (e) => {
+  //   console.log("kire", e.label);
+  //   setProductType(e.label);
+  // };
 
   return (
     <>
@@ -135,7 +137,7 @@ const AddProduct = () => {
         encType="multipart/form-data"
       >
         {/* variant select option start */}
-        <Select
+        {/* <Select
           labelInValue
           defaultValue={{
             value: "nonvariant",
@@ -156,7 +158,7 @@ const AddProduct = () => {
             },
           ]}
           // onChange={handleProductType}
-        />
+        /> */}
         {/* variant select option end */}
 
         <Form.Item
@@ -187,6 +189,8 @@ const AddProduct = () => {
             <p className="font-semibold">File name:</p>
             <input onChange={handleFile} type="file" name="" id="" />
             <img src={imagePrev} alt="" className="w-[100px] h-[100px]" />
+            {/* <Input onChange={handleChange} type="file" />
+        <img src={imagePrev} /> */}
           </div>
         </div>
 
@@ -211,7 +215,7 @@ const AddProduct = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           label="Description"
           name="description"
           rules={[
@@ -222,127 +226,59 @@ const AddProduct = () => {
           ]}
         >
           <Input />
-        </Form.Item>
+        </Form.Item> */}
       </Form>
 
-      {productType == 'Variant' &&
-
-      
-
-      <Form
-        name="basic"
-        labelCol={{
-          span: 8,
-        }}
-        wrapperCol={{
-          span: 16,
-        }}
-        style={{
-          maxWidth: 1000,
-        }}
-        initialValues={{
-          remember: true,
-        }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        {/* ck editor */}
-        <CkEditor />
-
-        <Form.Item
-          label="Variant Name"
-          name="variantname"
-          style={{
-            maxWidth: 600,
+      {productType == "Variant" && (
+        <Form
+          name="basic"
+          labelCol={{
+            span: 8,
           }}
-          rules={[
-            {
-              required: true,
-              message: "Please input your variant!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
           wrapperCol={{
-            offset: 8,
             span: 16,
           }}
+          style={{
+            maxWidth: 1000,
+          }}
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
         >
-          <Button ghost type="primary" htmlType="submit">
-            Add Variant
-          </Button>
-        </Form.Item>
+          {/* ck editor */}
+          <CkEditor />
 
-        
-        <Row>
-          {varinatvalue.length > 0 &&
-            varinatvalue.map((item, index) => (
-              <Col key={index} span={8}>
-                <Card
-                  style={{ width: 300 }}
-                  className="my-2 h-96 overflow-y-auto"
-                >
-                  <div>
-                    <div className="flex justify-between">
-                      <b>Variant Name: {item.name}</b>
-                      {/* {JSON.stringify(varinatvalue)} */}
-                      <Button
-                        type="primary"
-                        danger
-                        onClick={() => handleDelete(index)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
+          <Form.Item
+            label="Variant Name"
+            name="variantname"
+            style={{
+              maxWidth: 600,
+            }}
+            rules={[
+              {
+                required: true,
+                message: "Please input your variant!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-                    <Input
-                      placeholder="value name"
-                      className="my-2 placeholder:font-bold placeholder:text-lg"
-                      onChange={(e) => setValue(e.target.value)}
-                    />
-                    <Input
-                      placeholder="Sotck"
-                      className="my-2 placeholder:font-bold placeholder:text-lg"
-                      onChange={(e) => setValueStock(e.target.value)}
-                    />
-                    <br />
-                    <Button
-                      ghost
-                      type="primary"
-                      className="my-2"
-                      onClick={() => handleVariantValue(index)}
-                    >
-                      Add
-                    </Button>
-                    <div className="scroll-my-1">
-                      {item.value.map((i, id) => (
-                        <div
-                          key={i._id}
-                          className="flex gap-12 font-bold my-2 scroll-mt-0"
-                        >
-                          <p>{i.name}</p>
-                          <p>{i.stock}</p>
-                          <Button
-                            danger
-                            className="font-semibold"
-                            onClick={() => handleValueDelete(index, id)}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-              </Col>
-            ))}
-        </Row>
-      </Form>
-}
+          <Form.Item
+            wrapperCol={{
+              offset: 8,
+              span: 16,
+            }}
+          >
+            <Button ghost type="primary" htmlType="submit">
+              Add Variant
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
     </>
   );
 };

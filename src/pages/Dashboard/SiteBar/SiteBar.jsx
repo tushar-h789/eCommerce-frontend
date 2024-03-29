@@ -59,6 +59,7 @@ const SiteBar = () => {
       getItem("Product", "sub5", null, [
         getItem("Add Product", "addproduct"),
         getItem("View Product", "8"),
+        getItem("Add Variant", "addvariant"),
       ]),
     ]),
     getItem("Store", "sub6", <SettingOutlined />, [
