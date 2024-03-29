@@ -1,15 +1,20 @@
+// Importing necessary dependencies
 import { useState, useEffect } from "react";
 import { Button, Form, Input, Select } from "antd";
 import axios from "axios";
-const AddVariant = () => {
-  let [image, setImage] = useState({});
-  let [imagePrev, setImagePrev] = useState("");
-  let [prolist, setProlist] = useState([]);
-  let [productId, setProductId] = useState("");
+import Swal from "sweetalert2";
 
+// Component for adding a new product variant
+const AddVariant = () => {
+  // State variables for managing form inputs and data
+  let [image, setImage] = useState({}); // For storing selected image file
+  let [imagePrev, setImagePrev] = useState(""); // For displaying a preview of the selected image
+  let [prolist, setProlist] = useState([]); // For storing list of products
+  let [productId, setProductId] = useState(""); // For storing selected product ID
+
+  // Function to handle form submission
   const onFinish = async (values) => {
-    // console.log("Success:", values);
-    // console.log(image);
+    // Sending POST request to add a new variant
     let data = await axios.post(
       "http://localhost:7000/api/v1/products/variant",
       {
@@ -22,13 +27,25 @@ const AddVariant = () => {
           "Content-Type": "multipart/form-data",
         },
       }
-    );
-    // console.log(data);
+    ).then(() => {
+      // Showing success message upon successful addition
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your product added",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    });
+    console.log(data);
   };
+
+  // Function to handle form submission failure
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
+  // Fetching list of products from the server upon component mount
   useEffect(() => {
     console.log("running");
     async function getData() {
@@ -48,10 +65,13 @@ const AddVariant = () => {
     getData();
   }, []);
 
+  // Function to handle image file change
   let handleChange = (e) => {
     setImage(e.target.files[0]);
     setImagePrev(URL.createObjectURL(e.target.files[0]));
   };
+
+  // Function to handle product selection change
   let handleChange2 = (e) => {
     setProductId(e);
     console.log(e);
@@ -79,17 +99,19 @@ const AddVariant = () => {
         enctype="multipart/form-data"
       >
         <div className="mx-auto w-full text-center my-4">
-            <p className="font-semibold my-1"><strong>*</strong> Select Variant:</p>
-        <Select
-          defaultValue=""
-          style={{
-            width: 120,
-          }}
-          options={prolist}
-          onChange={handleChange2}
-        />
+          <p className="font-semibold my-1">
+            <strong>*</strong> Select Variant:
+          </p>
+          <Select
+            defaultValue=""
+            style={{
+              width: 120,
+            }}
+            options={prolist}
+            onChange={handleChange2}
+          />
         </div>
-        
+
         <Form.Item
           label="Product Name"
           name="name"
@@ -108,8 +130,6 @@ const AddVariant = () => {
             <p className="font-semibold">File name:</p>
             <input onChange={handleChange} type="file" name="" id="" />
             <img src={imagePrev} alt="" className="w-[100px] h-[100px]" />
-            {/* <Input onChange={handleChange} type="file" />
-        <img src={imagePrev} /> */}
           </div>
         </div>
 
@@ -119,8 +139,12 @@ const AddVariant = () => {
             span: 16,
           }}
         >
-          <Button type="primary" className="bg-orange-500 font-semibold"  htmlType="submit">
-            Submit
+          <Button
+            type="primary"
+            className="bg-orange-500 font-semibold"
+            htmlType="submit"
+          >
+            Add Variant
           </Button>
         </Form.Item>
       </Form>
