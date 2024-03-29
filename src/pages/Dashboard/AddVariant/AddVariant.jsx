@@ -8,13 +8,13 @@ const AddVariant = () => {
   let [productId, setProductId] = useState("");
 
   const onFinish = async (values) => {
-    console.log("Success:", values);
-    console.log(image);
+    // console.log("Success:", values);
+    // console.log(image);
     let data = await axios.post(
       "http://localhost:7000/api/v1/products/variant",
       {
         name: values.name,
-        vavatar: image,
+        avatar: image,
         productId: productId,
       },
       {
@@ -23,7 +23,7 @@ const AddVariant = () => {
         },
       }
     );
-    console.log(data);
+    // console.log(data);
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -78,6 +78,8 @@ const AddVariant = () => {
         autoComplete="off"
         enctype="multipart/form-data"
       >
+        <div className="mx-auto w-full text-center my-4">
+            <p className="font-semibold my-1"><strong>*</strong> Select Variant:</p>
         <Select
           defaultValue=""
           style={{
@@ -86,16 +88,8 @@ const AddVariant = () => {
           options={prolist}
           onChange={handleChange2}
         />
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
-        >
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
+        </div>
+        
         <Form.Item
           label="Product Name"
           name="name"
@@ -109,8 +103,26 @@ const AddVariant = () => {
           <Input />
         </Form.Item>
 
-        <Input onChange={handleChange} type="file" />
-        <img src={imagePrev} />
+        <div className="mx-auto w-full pl-28 my-4 ">
+          <div className="flex gap-6 justify-center items-center">
+            <p className="font-semibold">File name:</p>
+            <input onChange={handleChange} type="file" name="" id="" />
+            <img src={imagePrev} alt="" className="w-[100px] h-[100px]" />
+            {/* <Input onChange={handleChange} type="file" />
+        <img src={imagePrev} /> */}
+          </div>
+        </div>
+
+        <Form.Item
+          wrapperCol={{
+            offset: 8,
+            span: 16,
+          }}
+        >
+          <Button type="primary" className="bg-orange-500 font-semibold"  htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
       </Form>
     </>
   );

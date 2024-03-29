@@ -3,6 +3,8 @@ import { Button, Form, Input, Card, Col, Row, Select } from "antd";
 import axios from "axios";
 import Swal from "sweetalert2";
 import CkEditor from "./CkEditor";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 const { TextArea } = Input;
 
 const AddProduct = () => {
@@ -13,13 +15,13 @@ const AddProduct = () => {
   const [image, setImage] = useState({});
   const [imagePrev, setImagePrev] = useState({});
   const [productType, setProductType] = useState(null);
+  let [description, setDescription] = useState("");
 
   const onFinishMain = async (values) => {
     // console.log(values);
     const productData = {
       name: values.name,
-      description: values.description,
-      // variant: varinatvalue,
+      description: description,
       avatar: image,
     };
 
@@ -105,10 +107,10 @@ const AddProduct = () => {
     setImagePrev(URL.createObjectURL(e.target.files[0]));
   };
 
-  // const handleChange = (e) => {
-  //   console.log(e.label);
-  //   setProductType(e.label);
-  // };
+  const handleChange = (e) => {
+    console.log(e.label);
+    setProductType(e.label);
+  };
 
   // const handleProductType = (e) => {
   //   console.log("kire", e.label);
@@ -136,30 +138,7 @@ const AddProduct = () => {
         autoComplete="off"
         encType="multipart/form-data"
       >
-        {/* variant select option start */}
-        {/* <Select
-          labelInValue
-          defaultValue={{
-            value: "nonvariant",
-            label: "Non Variant",
-          }}
-          style={{
-            width: 120,
-          }}
-          onChange={handleChange}
-          options={[
-            {
-              value: "variant",
-              label: "Variant",
-            },
-            {
-              value: "nonvariant",
-              label: "Non Variant",
-            },
-          ]}
-          // onChange={handleProductType}
-        /> */}
-        {/* variant select option end */}
+       
 
         <Form.Item
           wrapperCol={{
@@ -229,7 +208,6 @@ const AddProduct = () => {
         </Form.Item> */}
       </Form>
 
-      {productType == "Variant" && (
         <Form
           name="basic"
           labelCol={{
@@ -249,9 +227,27 @@ const AddProduct = () => {
           autoComplete="off"
         >
           {/* ck editor */}
-          <CkEditor />
+          <CKEditor
+          editor={ClassicEditor}
+          data=""
+          onReady={(editor) => {
+            // You can store the "editor" and use when it is needed.
+            console.log("Editor is ready to use!", editor);
+          }}
+          onChange={(event, editor) => {
+            const data = editor.getData();
+            console.log(data);
+            setDescription(data);
+          }}
+          onBlur={(event, editor) => {
+            console.log("Blur.", editor);
+          }}
+          onFocus={(event, editor) => {
+            console.log("Focus.", editor);
+          }}
+        />
 
-          <Form.Item
+          {/* <Form.Item
             label="Variant Name"
             name="variantname"
             style={{
@@ -276,9 +272,8 @@ const AddProduct = () => {
             <Button ghost type="primary" htmlType="submit">
               Add Variant
             </Button>
-          </Form.Item>
+          </Form.Item> */}
         </Form>
-      )}
     </>
   );
 };
