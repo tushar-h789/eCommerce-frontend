@@ -15,28 +15,33 @@ const AddVariant = () => {
   // Function to handle form submission
   const onFinish = async (values) => {
     // Sending POST request to add a new variant
-    let data = await axios.post(
-      "http://localhost:7000/api/v1/products/variant",
-      {
-        name: values.name,
-        avatar: image,
-        productId: productId,
-      },
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+    let data = await axios
+      .post(
+        "http://localhost:7000/api/v1/products/variant",
+        {
+          name: values.name,
+          avatar: image,
+          productId: productId,
+          regularprice: values.regularprice,
+          salesprice: values.salesprice,
+          quantity: values.quantity,
         },
-      }
-    ).then(() => {
-      // Showing success message upon successful addition
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Your product added",
-        showConfirmButton: false,
-        timer: 1500,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then(() => {
+        // Showing success message upon successful addition
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Your product added",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       });
-    });
     console.log(data);
   };
 
@@ -119,6 +124,45 @@ const AddVariant = () => {
             {
               required: true,
               message: "Please input your product name!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Regular Price"
+          name="regularprice"
+          rules={[
+            {
+              required: true,
+              message: "Please input your regular Price!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Sales Price"
+          name="salesprice"
+          rules={[
+            {
+              required: true,
+              message: "Please input your sales Price!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Quantity"
+          name="quantity"
+          rules={[
+            {
+              required: true,
+              message: "Please input your quantity!",
             },
           ]}
         >

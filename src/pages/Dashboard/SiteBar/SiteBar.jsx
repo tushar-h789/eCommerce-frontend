@@ -58,7 +58,7 @@ const SiteBar = () => {
       ]),
       getItem("Product", "sub5", null, [
         getItem("Add Product", "addproduct"),
-        getItem("View Product", "8"),
+        getItem("View Product", "viewproduct"),
         getItem("Add Variant", "addvariant"),
       ]),
     ]),

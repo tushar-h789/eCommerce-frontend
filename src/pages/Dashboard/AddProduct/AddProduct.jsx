@@ -23,6 +23,9 @@ const AddProduct = () => {
       name: values.name,
       description: description,
       avatar: image,
+      regularprice: values.regularprice,
+      salesprice: values.salesprice,
+      quantity: values.quantity 
     };
 
     const data = await axios
@@ -163,6 +166,45 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
 
+        <Form.Item
+          label="Regular Price"
+          name="regularprice"
+          rules={[
+            {
+              required: true,
+              message: "Please input your regular Price!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Sales Price"
+          name="salesprice"
+          rules={[
+            {
+              required: true,
+              message: "Please input your sales Price!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Quantity"
+          name="quantity"
+          rules={[
+            {
+              required: true,
+              message: "Please input your quantity!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
         <div className="mx-auto w-full pl-28 my-4 ">
           <div className="flex gap-6 justify-center items-center">
             <p className="font-semibold">File name:</p>
@@ -174,7 +216,7 @@ const AddProduct = () => {
         </div>
 
         <Form.Item
-          label="Brand Name"
+          label="Store Name"
           name="brandName"
           rules={[
             {
@@ -236,14 +278,14 @@ const AddProduct = () => {
           }}
           onChange={(event, editor) => {
             const data = editor.getData();
-            console.log(data);
+            // console.log(data);
             setDescription(data);
           }}
           onBlur={(event, editor) => {
-            console.log("Blur.", editor);
+            // console.log("Blur.", editor);
           }}
           onFocus={(event, editor) => {
-            console.log("Focus.", editor);
+            // console.log("Focus.", editor);
           }}
         />
 

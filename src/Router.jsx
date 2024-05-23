@@ -18,6 +18,7 @@ import AddSubCategory from "./pages/Dashboard/AddSubCategory/AddSubCategory";
 import AddProduct from "./pages/Dashboard/AddProduct/AddProduct";
 import AddStore from "./pages/Dashboard/AddStore/AddStore";
 import AddVariant from "./pages/Dashboard/AddVariant/AddVariant";
+import ViewProduct from "./pages/Dashboard/ViewProduct/ViewProduct";
 
 export const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ export const router = createBrowserRouter([
       {
         path: 'addproduct',
         element: <AddProduct/>
+      },
+      {
+        path: 'viewproduct',
+        element: <ViewProduct/>
       },
       {
         path: 'addvariant',
