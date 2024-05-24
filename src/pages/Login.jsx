@@ -10,6 +10,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
+    console.log(values);
     const userInfo = {
       email: values.email,
       password: values.password,
@@ -23,7 +24,7 @@ const Login = () => {
       console.log(loginInfo.data);
 
       if (loginInfo.data.role === "User" || loginInfo.status === 403) {
-        console.log("do not allow ");
+        // console.log("do not allow ");
         setUserError("User not allowed");
       } else {
         // Check if the loginInfo contains an error message

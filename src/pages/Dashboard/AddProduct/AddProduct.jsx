@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Card, Col, Row, Select } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import axios from "axios";
 import Swal from "sweetalert2";
-import CkEditor from "./CkEditor";
+// import CkEditor from "./CkEditor";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 const AddProduct = () => {
   let [varinatvalue, setVarinatvalue] = useState([]);
-  let [value, setValue] = useState("");
-  let [valuestock, setValueStock] = useState("");
+  // let [value, setValue] = useState("");
+  // let [valuestock, setValueStock] = useState("");
   const [storeList, setStoreList] = useState([]);
   const [image, setImage] = useState({});
   const [imagePrev, setImagePrev] = useState({});
-  const [productType, setProductType] = useState(null);
+  // const [productType, setProductType] = useState(null);
   let [description, setDescription] = useState("");
 
   const onFinishMain = async (values) => {
@@ -110,10 +110,10 @@ const AddProduct = () => {
     setImagePrev(URL.createObjectURL(e.target.files[0]));
   };
 
-  const handleChange = (e) => {
-    console.log(e.label);
-    setProductType(e.label);
-  };
+  // const handleChange = (e) => {
+  //   console.log(e.label);
+  //   setProductType(e.label);
+  // };
 
   // const handleProductType = (e) => {
   //   console.log("kire", e.label);
@@ -282,10 +282,10 @@ const AddProduct = () => {
             setDescription(data);
           }}
           onBlur={(event, editor) => {
-            // console.log("Blur.", editor);
+            console.log("Blur.", editor);
           }}
           onFocus={(event, editor) => {
-            // console.log("Focus.", editor);
+            console.log("Focus.", editor);
           }}
         />
 

@@ -14,10 +14,6 @@ function getItem(label, key, icon, children, type) {
   };
 }
 
-
-
-
-
 // submenu keys of the first level
 const rootSubmenuKeys = ["sub1", "sub2", "sub6"];
 
@@ -25,7 +21,7 @@ const SiteBar = () => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const navigate = useNavigate();
   const userData = useSelector(state => state.activeUser.value);
-  // console.log(userData);
+  console.log(userData);
 
   const onOpenChange = (keys) => {
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
@@ -64,7 +60,7 @@ const SiteBar = () => {
     ]),
     getItem("Store", "sub6", <SettingOutlined />, [
       getItem("Add Store", "addstore"),
-      getItem("View Store", "10"),
+      getItem("View Store", "viewstore"),
     ]),
     getItem("Discount", "sub7", <SettingOutlined />, [
       getItem("Add Discount", "11"),
@@ -76,6 +72,10 @@ const SiteBar = () => {
     <>
       <Row className="my-4">
         <Col span={5}>
+          <div className="bg-white w-[255px] p-2 pl-8">
+          <h2 className="text-xl font-semibold my-2">{userData.name} ({userData.role})</h2>
+          <p>{userData.email}</p>
+          </div>
           <Menu
             mode="inline"
             openKeys={openKeys}

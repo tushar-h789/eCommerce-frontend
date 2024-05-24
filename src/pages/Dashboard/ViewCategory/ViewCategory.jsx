@@ -251,7 +251,7 @@ const ViewCategory = () => {
       <div className="flex justify-evenly">
         <h2 className="text-2xl font-semibold my-2">View Category</h2>
         <h2 className="text-2xl font-semibold my-2">
-          Total Category {categories.length}
+          Total Category: {categories.length}
         </h2>
       </div>
       <Table columns={columns} dataSource={categories} />

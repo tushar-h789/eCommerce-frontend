@@ -19,6 +19,7 @@ import AddProduct from "./pages/Dashboard/AddProduct/AddProduct";
 import AddStore from "./pages/Dashboard/AddStore/AddStore";
 import AddVariant from "./pages/Dashboard/AddVariant/AddVariant";
 import ViewProduct from "./pages/Dashboard/ViewProduct/ViewProduct";
+import ViewStore from "./pages/Dashboard/ViewStore/ViewStore";
 
 export const router = createBrowserRouter([
   {
@@ -98,6 +99,10 @@ export const router = createBrowserRouter([
       {
         path: 'addstore',
         element: <AddStore/>
+      },
+      {
+        path: 'viewstore',
+        element: <ViewStore/>
       }
     ]
   }
