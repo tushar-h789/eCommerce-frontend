@@ -20,6 +20,8 @@ import AddStore from "./pages/Dashboard/AddStore/AddStore";
 import AddVariant from "./pages/Dashboard/AddVariant/AddVariant";
 import ViewProduct from "./pages/Dashboard/ViewProduct/ViewProduct";
 import ViewStore from "./pages/Dashboard/ViewStore/ViewStore";
+import AddDiscount from "./pages/Dashboard/AddDiscount/AddDiscount";
+import ViewDiscount from "./pages/Dashboard/ViewDiscount/ViewDiscount";
 
 export const router = createBrowserRouter([
   {
@@ -103,6 +105,14 @@ export const router = createBrowserRouter([
       {
         path: 'viewstore',
         element: <ViewStore/>
+      },
+      {
+        path: 'adddiscount',
+        element: <AddDiscount/>
+      },
+      {
+        path: 'viewdiscount',
+        element: <ViewDiscount/>
       }
     ]
   }

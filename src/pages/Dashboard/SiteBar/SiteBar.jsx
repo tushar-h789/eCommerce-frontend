@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+  AppstoreOutlined,
+  MailOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { Col, Menu, Row } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -20,7 +24,7 @@ const rootSubmenuKeys = ["sub1", "sub2", "sub6"];
 const SiteBar = () => {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
   const navigate = useNavigate();
-  const userData = useSelector(state => state.activeUser.value);
+  const userData = useSelector((state) => state.activeUser.value);
   console.log(userData);
 
   const onOpenChange = (keys) => {
@@ -38,11 +42,11 @@ const SiteBar = () => {
 
   const items = [
     userData.role == "Admin" &&
-    getItem("Users", "sub1", <MailOutlined />, [
-      getItem("User", "userlist"),
-      getItem("Merchant", "merchant"),
-      getItem("Admin", "admin"),
-    ]),
+      getItem("Users", "sub1", <MailOutlined />, [
+        getItem("User", "userlist"),
+        getItem("Merchant", "merchant"),
+        getItem("Admin", "admin"),
+      ]),
     getItem("Products", "sub2", <AppstoreOutlined />, [
       getItem("Category", "sub3", null, [
         getItem("Add Category", "addcategory"),
@@ -63,8 +67,8 @@ const SiteBar = () => {
       getItem("View Store", "viewstore"),
     ]),
     getItem("Discount", "sub7", <SettingOutlined />, [
-      getItem("Add Discount", "11"),
-      getItem("View Discount", "12"),
+      getItem("Add Discount", "adddiscount"),
+      getItem("View Discount", "viewdiscount"),
     ]),
   ];
 
@@ -73,8 +77,10 @@ const SiteBar = () => {
       <Row className="my-4">
         <Col span={5}>
           <div className="bg-white w-[255px] p-2 pl-8">
-          <h2 className="text-xl font-semibold my-2">{userData.name} ({userData.role})</h2>
-          <p>{userData.email}</p>
+            <h2 className="text-xl font-semibold my-2">
+              {userData.name} ({userData.role})
+            </h2>
+            <p>{userData.email}</p>
           </div>
           <Menu
             mode="inline"
