@@ -12,6 +12,7 @@ const AddProduct = () => {
   // let [value, setValue] = useState("");
   // let [valuestock, setValueStock] = useState("");
   const [storeList, setStoreList] = useState([]);
+  const [subCategory, setSubCategory] = useState([]);
   const [image, setImage] = useState({});
   const [imagePrev, setImagePrev] = useState({});
   // const [productType, setProductType] = useState(null);
@@ -25,8 +26,10 @@ const AddProduct = () => {
       avatar: image,
       regularprice: values.regularprice,
       salesprice: values.salesprice,
-      quantity: values.quantity 
+      quantity: values.quantity,
+      subcategory: values.subcategory,
     };
+    console.log(productData);
 
     const data = await axios
       .post(
@@ -97,12 +100,27 @@ const AddProduct = () => {
     // console.log("running");
     async function getData() {
       const data = await axios.get(
-        "http://localhost:7000/api/v1/products/viewstore/65c725ddf3bff7b9096d963d"
+        "http://localhost:7000/api/v1/products/viewstore"
       );
       // console.log(data.data);
       setStoreList(data.data);
+      // console.log(data.data);
     }
     getData();
+  }, []);
+
+  // subCategory useEffect
+  useEffect(() => {
+    // console.log("running");
+    async function getSubCategoryData() {
+      const data = await axios.get(
+        "http://localhost:7000/api/v1/products/viewsubcategory"
+      );
+      // console.log(data.data);
+      setSubCategory(data.data.data);
+      // console.log(data.data.data);
+    }
+    getSubCategoryData();
   }, []);
 
   const handleFile = (e) => {
@@ -141,8 +159,6 @@ const AddProduct = () => {
         autoComplete="off"
         encType="multipart/form-data"
       >
-       
-
         <Form.Item
           wrapperCol={{
             offset: 8,
@@ -236,6 +252,30 @@ const AddProduct = () => {
           </Select>
         </Form.Item>
 
+        <Form.Item
+          label="Sub Category Name"
+          name="subcategory"
+          rules={[
+            {
+              required: true,
+              message: "Please input your Sub Category Name!",
+            },
+          ]}
+        >
+          <Select>
+            {subCategory.map((subCategoryData) => (
+              // <div key={storeData._id}>
+              <Select.Option
+                key={subCategoryData._id}
+                value={subCategoryData._id}
+              >
+                {subCategoryData.name}
+              </Select.Option>
+              // </div>
+            ))}
+          </Select>
+        </Form.Item>
+
         {/* <Form.Item
           label="Description"
           name="description"
@@ -250,26 +290,26 @@ const AddProduct = () => {
         </Form.Item> */}
       </Form>
 
-        <Form
-          name="basic"
-          labelCol={{
-            span: 8,
-          }}
-          wrapperCol={{
-            span: 16,
-          }}
-          style={{
-            maxWidth: 1000,
-          }}
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
-          {/* ck editor */}
-          <CKEditor
+      <Form
+        name="basic"
+        labelCol={{
+          span: 8,
+        }}
+        wrapperCol={{
+          span: 16,
+        }}
+        style={{
+          maxWidth: 1000,
+        }}
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+        {/* ck editor */}
+        <CKEditor
           editor={ClassicEditor}
           data=""
           onReady={(editor) => {
@@ -289,7 +329,7 @@ const AddProduct = () => {
           }}
         />
 
-          {/* <Form.Item
+        {/* <Form.Item
             label="Variant Name"
             name="variantname"
             style={{
@@ -315,7 +355,7 @@ const AddProduct = () => {
               Add Variant
             </Button>
           </Form.Item> */}
-        </Form>
+      </Form>
     </>
   );
 };

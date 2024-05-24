@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 
 const ViewStore = () => {
   const [store, setStore] = useState([]);
-  const [productsName, setProductsName] = useState([]);
   const [shouldReloadData, setShouldReloadData] = useState(false);
   const [loadingCategoryId, setLoadingCategoryId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,8 +14,8 @@ const ViewStore = () => {
   const [errorMessage, setErrorMessage] = useState(null); // State to manage error messages
   const userData = useSelector((state) => state.activeUser.value);
 
-  // Function to handle sub-category deletion
-  const handleDelete = async (productId) => {
+  // Function to handle store deletion
+  const handleDelete = async (storeId) => {
     try {
       // Display confirmation modal before deletion
       Swal.fire({
@@ -30,12 +29,12 @@ const ViewStore = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           // Set loading state during deletion
-          setLoadingCategoryId(productId);
+          setLoadingCategoryId(storeId);
 
-          // Make API request to delete sub-category
+          // Make API request to delete store
           const response = await axios.delete(
             "http://localhost:7000/api/v1/products/deletestore",
-            { data: { storeId: productId } }
+            { data: { storeId: storeId } }
           );
           console.log(response);
 
@@ -43,7 +42,7 @@ const ViewStore = () => {
           Swal.fire({
             position: "top-end",
             icon: "success",
-            title: " Category Deleted!",
+            title: "Store Deleted!",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -55,11 +54,11 @@ const ViewStore = () => {
       });
     } catch (error) {
       // Log and handle errors
-      console.error("Error handling sub-category deletion:", error);
+      console.error("Error handling store deletion:", error);
     }
   };
 
-  // Edit section...
+  // Function to handle form submission for editing a store
   const onFinish = async (values) => {
     console.log("Success:", values);
     const editStoreData = {
@@ -68,7 +67,7 @@ const ViewStore = () => {
     };
     console.log(editStoreData);
 
-    // Make API request to edit sub-category
+    // Make API request to edit store
     const response = await axios.post(
       "http://localhost:7000/api/v1/products/editstore",
       editStoreData
@@ -83,7 +82,7 @@ const ViewStore = () => {
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: " Store Updated!",
+        title: "Store Updated!",
         showConfirmButton: false,
         timer: 1500,
       });
@@ -103,7 +102,7 @@ const ViewStore = () => {
     setIsModalOpen(true);
     setEditId(editId);
 
-    // Find the category data based on the editId
+    // Find the store data based on the editId
     const storeToEdit = store.find((store) => store.key === editId);
     console.log(storeToEdit);
 
@@ -122,11 +121,11 @@ const ViewStore = () => {
   };
   // Modal section end
 
-  // Fetch all sub-categories from the API for display
+  // Fetch all stores from the API for display
   useEffect(() => {
-    async function fetchAllSubCategories() {
+    async function fetchAllStores() {
       try {
-        // Make API request to get all sub-categories
+        // Make API request to get all stores
         const response = await axios.get(
           "http://localhost:7000/api/v1/products/viewstore"
         );
@@ -139,92 +138,25 @@ const ViewStore = () => {
           storeName: item.storeName,
           tradeNumber: item.tradeNumber,
           status: item.isActive ? "Approved" : "Pending",
+          owners: item.ownerId.map((owner) => ({
+            id: owner._id,
+            name: owner.name,
+            email: owner.email,
+          })),
         }));
 
         // Set the transformed data to the state
         setStore(viewStoreData);
+        console.log(viewStoreData);
       } catch (error) {
         // Handle errors if any
-        console.error("Error fetching sub-categories:", error);
+        console.error("Error fetching stores:", error);
       }
     }
 
-    // Fetch sub-categories when the component mounts and whenever data should be reloaded
-    fetchAllSubCategories();
+    // Fetch stores when the component mounts and whenever data should be reloaded
+    fetchAllStores();
   }, [shouldReloadData]);
-
-  // Fetch all categories and associated sub-categories for display
-  useEffect(() => {
-    // Function to fetch all categories and associated sub-categories from the API
-    const arr = [];
-    async function fetchAllCategories() {
-      try {
-        // Make API request to get all sub-categories
-        const response = await axios.get(
-          "http://localhost:7000/api/v1/products/viewstore"
-        );
-        console.log("res", response.data);
-
-        // Transform the received data into the desired format
-        response.data.map((item) => {
-          arr.push({
-            key: item._id,
-            storeName: item.storeName,
-            tradeNumber: item.tradeNumber,
-            // categoryName: item.categoryId?.name,
-            status: item.isActive ? "Approved" : "Pending",
-          });
-          // console.log("item",item.categoryId?.name);
-        });
-
-        // Set the transformed data to the state
-        setProductsName(arr);
-        // console.log("subCategory", subCategories);
-      } catch (error) {
-        // Handle errors if any
-        console.error("Error fetching categories:", error);
-      }
-    }
-
-    // Fetch categories when the component mounts and whenever data should be reloaded
-    fetchAllCategories();
-  }, [shouldReloadData]);
-
-  // Function to handle sub-category approval
-  //   const handleApprove = async (approve) => {
-  //     setLoadingCategoryId(approve.key);
-
-  //     // Create request payload for sub-category approval
-  //     const editCategoryData = {
-  //       isActive: approve.status === "Approved" ? false : true,
-  //       id: approve.key,
-  //     };
-
-  //     // Make API request to approve sub-category
-  //     const response = await axios.post(
-  //       "http://localhost:7000/api/v1/products/approvesubcategory",
-  //       editCategoryData
-  //     );
-
-  //     // Handle response based on status
-  //     if (response.status === 200 && response.data === "status changed!") {
-  //       setErrorMessage("This category is approved !");
-  //     } else {
-  //       // Display success message using Swal
-  //       Swal.fire({
-  //         position: "top-end",
-  //         icon: "success",
-  //         title: " Category Approved!",
-  //         showConfirmButton: false,
-  //         timer: 1500,
-  //       });
-
-  //       // Trigger data reload and reset loading state
-  //       setShouldReloadData(!shouldReloadData);
-  //       setLoadingCategoryId("");
-  //     //   setIsModalOpen(false); // Close the modal after successful edit
-  //     }
-  //   };
 
   // Table columns configuration
   const columns = [
@@ -239,6 +171,21 @@ const ViewStore = () => {
       dataIndex: "tradeNumber",
       key: "tradeNumber",
       render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Owners",
+      dataIndex: "owners",
+      key: "owners",
+      render: (owners) => (
+        <div>
+          {owners.map((owner) => (
+            <div key={owner.id}>
+              <p>Name: {owner.name}</p>
+              <p>Email: {owner.email}</p>
+            </div>
+          ))}
+        </div>
+      ),
     },
     {
       title: "Status",
@@ -269,7 +216,7 @@ const ViewStore = () => {
             <Button
               type="primary"
               ghost
-              //   onClick={() => handleApprove(record)}
+              // onClick={() => handleApprove(record)}
               loading={loadingCategoryId === record.key}
             >
               {record.status === "Approved" ? "Hold" : "Approve"}
@@ -287,15 +234,15 @@ const ViewStore = () => {
         <div className="flex justify-evenly">
           <h2 className="text-2xl font-semibold my-2">View Store</h2>
           <h2 className="text-2xl font-semibold my-2">
-            Total Store: {productsName.length}
+            Total Store: {store.length}
           </h2>
         </div>
-        {/* Render the table with columns and sub-category data */}
-        <Table columns={columns} dataSource={productsName} />
+        {/* Render the table with columns and store data */}
+        <Table columns={columns} dataSource={store} />
 
         {/* Render Edit modal */}
         <Modal
-          title="Edit Category"
+          title="Edit Store"
           visible={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}

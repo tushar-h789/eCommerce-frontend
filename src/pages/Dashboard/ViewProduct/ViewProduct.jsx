@@ -135,7 +135,7 @@ const ViewProduct = () => {
           "http://localhost:7000/api/v1/products/viewproducts"
         );
 
-        // console.log(response.data);
+        console.log(response.data);
 
         // Transform the received data into the desired format
         const viewProductsData = response.data.data.map((item) => ({
@@ -147,6 +147,7 @@ const ViewProduct = () => {
 
         // Set the transformed data to the state
         setProducts(viewProductsData);
+        console.log(products);
       } catch (error) {
         // Handle errors if any
         console.error("Error fetching sub-categories:", error);
